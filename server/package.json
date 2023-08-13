@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon script.ts"
+    "devStart": "nodemon express.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@prisma/client": "^5.1.1"
+    "@prisma/client": "^5.1.1",
+    "express": "^4.18.2"
   }
 }
