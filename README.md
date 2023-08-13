@@ -1,0 +1,1 @@
+This is a full stack application freaturing an sql server rest backend paired with a next.js frontend, all created and organized by Kalan Jarvis-Loewen. Start date: August 12, 2023.
