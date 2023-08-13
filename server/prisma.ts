@@ -1,25 +1,52 @@
 import { PrismaClient } from '@prisma/client'
+import { UserParams } from './types'
 const prisma = new PrismaClient()
 
-async function main(run: () => {}) {
 
-    return run()
+export const createUser = async (params: UserParams) => {
+
+    try {
+        let user = await prisma.user.create({
+            data: {
+                ...params.userParams, 
+                userPreference: {
+                    create: {
+                        emailUpdates: params.userPreferenceParams.emailUpdates
+                    }
+                }
+            },
+        })
+
+        return user
+    } catch (e:any) {
+        console.log(e.message)
+        return 404
+    }
+    
+    
+    // .catch(e => {
+    //     console.log("Throwing err")
+        
+    // }).then(val => {
+    //     console.log("Throwing nerr")
+    //     return val
+    // }).finally(async () => {
+    //     await prisma.$disconnect()
+    // })
+
 }
 
+export const getAllUsers = async () => {
 
-export const runAsyncPrisma = async (run: () => {}) => {
-
-    let val = await main(run)
-    .catch(e => {
-        console.error(e.message)
-    })
-    .finally(async () => {
-        await prisma.$disconnect()
-        return run()
-    })
+    let val = await prisma.user.findMany()
 
     return val
 }
 
+export const deleteAllUsers = async () => {
 
 
+    let val = await prisma.user.deleteMany()
+
+    return val
+}
