@@ -11,21 +11,6 @@ require("dotenv").config()
 
 export const jwt = require("jsonwebtoken")
 
-// Authenticate user and return token
-app.post('/login', (req: Request, res: Response) => {
-
-    const body: LogInReqBody = req.body
-
-    const {email} = body
-
-    const user = { email: email }
-
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-
-    res.json({accessToken: accessToken})
-
-})
-
 // Create a user with an email, name and age
 app.post('/create-user', async (req: Request, res: Response) => {
     

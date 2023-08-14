@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon express.ts"
+    "devStart": "nodemon express.ts",
+    "devStartAuth": "nodemon auth.ts"
   },
   "keywords": [],
   "author": "",
