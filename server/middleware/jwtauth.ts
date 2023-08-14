@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { jwt } from "../express";
 require("dotenv").config()
+
+const jwt = require("jsonwebtoken")
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
 

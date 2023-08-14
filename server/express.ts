@@ -9,7 +9,7 @@ app.use(express.json())
 
 require("dotenv").config()
 
-export const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
 
 // Create a user with an email, name and age
 app.post('/create-user', async (req: Request, res: Response) => {

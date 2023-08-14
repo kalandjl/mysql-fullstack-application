@@ -1,6 +1,9 @@
 import { Request, Response } from "express"
 import { LogInReqBody } from "./types"
-import { jwt } from "./express"
+import { RedisClientType } from "@redis/client"
+import { createClient } from "redis"
+
+const jwt = require("jsonwebtoken")
 
 const express = require("express")
 const app = express()
@@ -8,10 +11,14 @@ app.use(express.json())
 
 require("dotenv").config()
 
-let refreshTokens: string[] = []
+const pubClient = createClient();
+
+pubClient.connect()
+    .catch(e => console.log(e))
+
 
 // Authenticate user and return token
-app.post('/login', (req: Request, res: Response) => {
+app.post('/login', async (req: Request, res: Response) => {
 
     const body: LogInReqBody = req.body
 
@@ -21,7 +28,9 @@ app.post('/login', (req: Request, res: Response) => {
 
     const accessToken = generateAccessToken(user)
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-    refreshTokens.push(refreshToken)
+    
+
+    pubClient.set(refreshToken, refreshToken)
 
     res.json({accessToken: accessToken, refreshToken: refreshToken})
 
@@ -29,18 +38,26 @@ app.post('/login', (req: Request, res: Response) => {
 
 app.delete('/logout', (req: Request, res: Response) => {
 
-    refreshTokens = refreshTokens.filter(token => token !== req.body.token)
-    console.log(refreshTokens)
+    pubClient.del(req.body.token)
+
     res.sendStatus(204)
 })
 
-app.get('/refreshTokens', (req: Request, res: Response) => {
+app.get('/refreshTokens', async (req: Request, res: Response) => {
+    
+    let refreshTokens
+
+    await pubClient.keys('*')
+        .catch(e => console.log(e))
+        .then(e => refreshTokens = e)
 
     res.send(refreshTokens)
 })
-app.post('/token', (req: Request, res: Response) => {
+app.post('/token', async (req: Request, res: Response) => {
 
     const refreshToken = req.body.token
+
+    const refreshTokens = await pubClient.keys('*')
 
     if (refreshToken == null) return res.sendStatus(401)
     if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
