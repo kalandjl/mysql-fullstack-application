@@ -76,4 +76,4 @@ app.get('/delete-all-users', async (req: Request, res: Response) => {
             return res.sendStatus(200)
         })
 })
-app.listen(3001, () => console.log("Server Running"))
+app.listen(4000, () => console.log("Server Running"))
