@@ -1,6 +1,5 @@
 import { Request, Response } from "express"
 import { LogInReqBody } from "./types"
-import { RedisClientType } from "@redis/client"
 import { createClient } from "redis"
 
 const jwt = require("jsonwebtoken")
@@ -22,9 +21,15 @@ app.post('/login', async (req: Request, res: Response) => {
 
     const body: LogInReqBody = req.body
 
-    const {email} = body
 
-    const user = { email: email }
+    const { uid } = body
+
+    //@ts-ignore
+    if (!uid) return res.status(406).send("No uid provided")
+
+    const user = { uid: uid }
+
+    console.log(user)
 
     const accessToken = generateAccessToken(user)
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
@@ -65,14 +70,14 @@ app.post('/token', async (req: Request, res: Response) => {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err: any, user: any) => {
         if (err) return res.status(403).send(err)
 
-        const accessToken = generateAccessToken( {email: user.email} )
+        const accessToken = generateAccessToken( {uid: user.uid} )
         res.json({ accessToken: accessToken })
     })
 })
 
-const generateAccessToken = (user: { email: string }) => {
+const generateAccessToken = (user: { uid: string }) => {
 
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15s"})
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"})
 }
 
 

@@ -9,9 +9,10 @@ datasource db {
 
 model User {
   id            String  @id @default(uuid())
-  name          String?
+  name          String? @db.VarChar(45)
   email         String  @unique
-  age Int
+  password      String   @db.VarChar(22)  @default("password")
+  age Int      
   role Role @default(BASIC)
   writtenPosts  Post[]  @relation("WrittenPosts")
   favoritePosts Post[]  @relation("FavoritePosts")

@@ -30,5 +30,5 @@ export interface CatchResObj {
 }
 
 export interface LogInReqBody {
-    email: string
+    uid: string
 }
