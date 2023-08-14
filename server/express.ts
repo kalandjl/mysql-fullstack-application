@@ -2,13 +2,14 @@ import { Request, Response } from "express"
 import { LogInReqBody, UserRequestBody } from "./types"
 import { createUser, deleteAllUsers, deleteUser, getAllUsers, getUser } from "./prisma"
 import { catchError } from "./error"
+import { authenticateToken } from "./middleware/jwtauth"
 const express = require("express")
 const app = express()
 app.use(express.json())
 
 require("dotenv").config()
 
-const jwt = require("jsonwebtoken")
+export const jwt = require("jsonwebtoken")
 
 // Authenticate user and return token
 app.post('/login', (req: Request, res: Response) => {
@@ -42,16 +43,20 @@ app.post('/create-user', async (req: Request, res: Response) => {
 })
 
 //Returns information on a user given uid 
-app.post('/get-user', async (req: Request, res: Response) => {
+app.post('/get-user', authenticateToken ,async (req: Request, res: Response) => {
+
+    //@ts-ignore
+    console.log(req.user)
 
     let uid: string = req.body.uid
     let resObj = await catchError(getUser, uid)
 
+    
     if (resObj.message === undefined) {
         res.sendStatus(resObj.code)
     } else {
         //@ts-ignore
-        res.send(resObj.message, resObj.code)
+        res.send(resObj.message).status(resObj.code)
     }
 })
 
