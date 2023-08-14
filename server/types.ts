@@ -1,12 +1,16 @@
 import { $Enums, User } from "@prisma/client"
 
 export interface UserRequestBody { 
-    name:string;age:number;email:string
+    name:string;age:number;email:string;password: string
     userPreference: {emailUpdates:boolean};
 }
 
 export interface UserParams  {
-    userParams: {name:string;age:number;email:string};
+    userParams: {
+        name:string;
+        age:number;
+        email:string;
+        password:string};
     userPreferenceParams: {emailUpdates:boolean};
 }
 

@@ -2,13 +2,12 @@ import { PrismaClient } from '@prisma/client'
 import { ErrorObject, UserObj, UserParams } from './types'
 const prisma = new PrismaClient()
 
-
 export const createUser = async (params: UserParams) => {
 
     try {
         let user: UserObj = await prisma.user.create({
             data: {
-                ...params.userParams, 
+                ...params.userParams,
                 userPreference: {
                     create: {
                         emailUpdates: params.userPreferenceParams.emailUpdates

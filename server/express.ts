@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { LogInReqBody, UserRequestBody } from "./types"
+import { LogInReqBody, UserParams, UserRequestBody } from "./types"
 import { createUser, deleteAllUsers, deleteUser, getAllUsers, getUser } from "./prisma"
 import { catchError } from "./error"
 import { authenticateToken } from "./middleware/jwtauth"
@@ -15,9 +15,12 @@ const jwt = require("jsonwebtoken")
 app.post('/create-user', async (req: Request, res: Response) => {
     
     let body: UserRequestBody = req.body
-    let {name, email, age} = body
+    let {name, email, age, password} = body
+
+    if (!name || !email || !age || !password) return res.status(406).send("insuficient data")
+    let params = {name: name, email: email, age: age, password: password}
     let {emailUpdates} = body.userPreference
-    let resObj = await catchError(createUser, {userParams: {name,email,age}, userPreferenceParams: {emailUpdates}})
+    let resObj = await catchError(createUser, {userParams: {name,email,age,password}, userPreferenceParams: {emailUpdates}})
  
     if (resObj.message === undefined) {
         res.sendStatus(resObj.code)
