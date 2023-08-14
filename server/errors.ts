@@ -11,4 +11,12 @@ export const errors = {
         "code": 400,
         "message": "User has already been deleted or doesn't exist",
     },
+    "Wrong password given": {
+        "code": "400",
+        "message": "Wrong password given"
+    },
+    "No such email": {
+        "code": "400",
+        "message": "No such email"
+    }
 }

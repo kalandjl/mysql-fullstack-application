@@ -1,6 +1,8 @@
 import { Request, Response } from "express"
 import { LogInReqBody } from "./types"
 import { createClient } from "redis"
+import { verifyUser } from "./prisma"
+import { catchError } from "./error"
 
 const jwt = require("jsonwebtoken")
 
@@ -22,12 +24,21 @@ app.post('/login', async (req: Request, res: Response) => {
     const body: LogInReqBody = req.body
 
 
-    const { uid } = body
+    const { email, password } = body
 
-    //@ts-ignore
-    if (!uid) return res.status(406).send("No uid provided")
+    let resObj = await catchError(verifyUser, {email: email, password: password})
 
-    const user = { uid: uid }
+    if (resObj.code !== 200) {
+        return res.status(resObj.code).send(resObj.message)
+    } 
+
+    let resMessage = JSON.parse(resObj.message ?? "{id: null}")
+
+    if (!resMessage.id) return res.status(406).send("No uid provided")
+
+    const user = { uid: JSON.parse(resObj.message ?? "{uid: null}").id }
+
+    if (!user.uid) return res.status(400).send("Issue occures")
 
     console.log(user)
 
