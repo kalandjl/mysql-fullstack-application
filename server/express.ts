@@ -16,7 +16,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
     // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
 
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
@@ -61,7 +61,7 @@ app.post('/create-user', async (req: Request, res: Response) => {
 })
 
 //Returns information on a user given uid 
-app.post('/get-user', authenticateToken ,async (req: Request, res: Response) => {
+app.post('/get-user', authenticateToken, async (req: Request, res: Response) => {
 
     //@ts-ignore
     console.log(req.user)
@@ -109,4 +109,15 @@ app.get('/delete-all-users', async (req: Request, res: Response) => {
             return res.sendStatus(200)
         })
 })
+
+app.get('/get-posts', authenticateToken, async (req: Request, res: Response) => {
+
+    res.send([
+        {
+            title: "Post1",
+            author: "Kalan"
+        }
+    ])
+})
+
 app.listen(4000, () => console.log("Server Running"))

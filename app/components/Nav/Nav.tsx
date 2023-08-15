@@ -1,10 +1,11 @@
-import { FC, LegacyRef, Ref, RefAttributes, RefObject, useRef, useState } from "react";
+import { FC, LegacyRef, Ref, RefAttributes, RefObject, useEffect, useRef, useState } from "react";
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { classNames } from "../../lib/classes";
 import useAuthState from "../../hook/useAuthState";
 import Link from "next/link";
+import { deleteJwtToken } from "../../lib/jwt";
 
 interface Props {
 
@@ -18,7 +19,14 @@ const navigation = [
 ]
 const Nav: FC<Props> = (props: Props) => {
 
-    const [user] = useAuthState(false)
+    const [user] = useAuthState()
+    let [authState, setAuthState] = useState<boolean>(false)
+
+    useEffect(() => {
+
+        console.log(user)
+        setAuthState(authState = user)
+    }, [user])
 
     const loginButtonRef = useRef<any>(null)
     const signupButtonRef = useRef<any>(null)
@@ -70,7 +78,7 @@ const Nav: FC<Props> = (props: Props) => {
                         </div>
                     </div>
                     {
-                        user ?
+                        authState ?
                         <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                             <button
                             type="button"
@@ -78,7 +86,7 @@ const Nav: FC<Props> = (props: Props) => {
                             >
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">View notifications</span>
-                            <BellIcon className="h-6 w-6" aria-hidden="true" />
+                                <BellIcon className="h-6 w-6" aria-hidden="true" />
                             </button>
 
                             {/* Profile dropdown 
@@ -127,12 +135,12 @@ const Nav: FC<Props> = (props: Props) => {
                                 </Menu.Item>
                                 <Menu.Item>
                                     {({ active }: any) => (
-                                    <a
-                                        href="#"
+                                    <Link
+                                        href="/signout"
                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                     >
                                         Sign out
-                                    </a>
+                                    </Link>
                                     )}
                                 </Menu.Item>
                                 </Menu.Items>

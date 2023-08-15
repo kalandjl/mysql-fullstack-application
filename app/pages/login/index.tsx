@@ -103,14 +103,14 @@ const Home: NextPage = () => {
                     </div>
                 </form>
 
-                <p className="mt-10 text-center text-sm text-gray-500">
+                <div className="mt-10 text-center text-sm text-gray-500">
                     Don't have an account?{' '}
                     <Link href="/signup">
                         <p className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                             Sign Up  
                         </p>
                     </Link>
-                </p>
+                </div>
                 </div>
             </div>
             </div>

@@ -12,7 +12,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err: any, user: any) => {
         //@ts-ignore
-        if (err) return res.status(403).send(err)
+        if (err) return res.status(401).send(err)
         
         //@ts-ignore
         req.user = user

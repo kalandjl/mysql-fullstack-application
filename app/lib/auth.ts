@@ -1,3 +1,5 @@
+import { setJwtToken, setRefreshToken } from "./jwt"
+
 export const logIn: (params: {email: string, password: string}) => Promise<{accessToken: string, refreshToken: string}> = async (params) => {
 
     const { email, password } = params 
@@ -10,7 +12,12 @@ export const logIn: (params: {email: string, password: string}) => Promise<{acce
         body: JSON.stringify({email: email, password: password})
     })
 
+    if (response.status != 200) throw new Error(response.statusText)
+
     let resBody = await response.json()
-    
+
+    setJwtToken(resBody.accessToken)
+    setRefreshToken(resBody.refreshToken)
+
     return {accessToken: resBody.accessToken, refreshToken: resBody.refreshToken}
 }
