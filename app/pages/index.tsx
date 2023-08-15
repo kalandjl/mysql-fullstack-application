@@ -1,17 +1,19 @@
 import type { NextPage } from 'next'
+import Layout from '../components/Layout'
+import Nav from '../components/Nav'
+import Footer from '../components/Footer'
 
 const Home: NextPage = () => {
     return (
         <>
-            <div className="grid place-items-center bg-sky-400 h-screen">
-                <div className="text-center">
-                    <h1>
-                        SERVER APP...
+            <div className='h-screen grid place-items-center'>
+                <div className='grid place-items-center bg-emerald-800 rounded-md px-32 py-16'>
+                    <h1
+                    className='bold text-white text-9xl'>
+                        BLOG
                     </h1>
-                    <p>
-                        Currently building server
-                    </p>
                 </div>
+
             </div>
         </>
     )
