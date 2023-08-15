@@ -1,3 +1,5 @@
+import { logIn } from "./auth"
+import { getJwtToken, getRefreshToken, setJwtToken, setRefreshToken } from "./jwt"
 
 export const signUpFormOnSubmit = async (params: {email: string, password: string, name: string, age: number}) => {
 
@@ -5,7 +7,7 @@ export const signUpFormOnSubmit = async (params: {email: string, password: strin
 
         //...
     // Make the login API call
-    let response = await fetch(`http://localhost:4000/create-user`, {
+    let response: any = await fetch(`http://localhost:4000/create-user`, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -15,13 +17,15 @@ export const signUpFormOnSubmit = async (params: {email: string, password: strin
     
     if (response.status !== 200) throw new Error("Error") 
 
-    response = await fetch(`http://localhost:5000/login`, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({email: email, password: password})
-    })
+    response = await logIn({email: email, password: password})
 
     console.log(await response.json())
+}
+
+export const logInFormOnSubmit = async (params: {email: string, password: string}) => {
+
+    let { accessToken, refreshToken} = await logIn(params)
+
+    setJwtToken(accessToken)
+    setRefreshToken(refreshToken)
 }

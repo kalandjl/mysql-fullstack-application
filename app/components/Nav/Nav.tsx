@@ -23,8 +23,6 @@ const Nav: FC<Props> = (props: Props) => {
     const loginButtonRef = useRef<any>(null)
     const signupButtonRef = useRef<any>(null)
 
-    console.log(user)
-
     return (
         <>
             {/* @ts-ignore */}

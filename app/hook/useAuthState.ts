@@ -1,8 +1,10 @@
+import { getJwtToken } from "../lib/jwt";
 
 const useAuthState = (bool: boolean) => {
 
 
-  return [bool]
+  const jwt = getJwtToken()
+  return [jwt ?? false]
 };
 
 export default useAuthState;

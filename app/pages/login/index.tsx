@@ -1,7 +1,29 @@
 import { NextPage } from "next"
 import Link from "next/link"
+import { useRef } from "react"
+import { logInFormOnSubmit } from "../../lib/requests"
 
 const Home: NextPage = () => {
+
+    let emailRef = useRef(null)
+    let passwordRef = useRef(null)
+    
+    const handleSubmit = (event: Event) => {
+
+        // @ts-ignore
+        let email = emailRef.current?.value
+        // @ts-ignore
+        let password = passwordRef.current?.value
+
+        if (!email) return window.alert("Missing Email")
+        if (!password) return window.alert("Missing Password")
+
+        logInFormOnSubmit({
+            email: email,
+            password: password,
+        })
+        event.preventDefault()
+    }
 
     return (
         <>
@@ -27,13 +49,16 @@ const Home: NextPage = () => {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" action="#" method="POST">
+                <form className="space-y-6" action="#" method="POST"
+                //@ts-ignore
+                onSubmit={handleSubmit}>
                     <div>
                     <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                         Email address
                     </label>
                     <div className="mt-2">
                         <input
+                        ref={emailRef}
                         id="email"
                         name="email"
                         type="email"
@@ -57,6 +82,7 @@ const Home: NextPage = () => {
                     </div>
                     <div className="mt-2">
                         <input
+                        ref={passwordRef}
                         id="password"
                         name="password"
                         type="password"
