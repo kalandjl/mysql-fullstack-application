@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { LogInReqBody, UserParams, UserRequestBody } from "./types"
-import { createUser, deleteAllUsers, deleteUser, getAllUsers, getUser } from "./prisma"
+import { LogInReqBody, PostRequestBody, UserParams, UserRequestBody } from "./types"
+import { createPost, createUser, deleteAllPosts, deleteAllUsers, deletePost, deleteUser, getAllPosts, getAllUsers, getPost, getUser } from "./prisma"
 import { catchError } from "./error"
 import { authenticateToken } from "./middleware/jwtauth"
 const express = require("express")
@@ -79,7 +79,7 @@ app.post('/get-user', authenticateToken, async (req: Request, res: Response) => 
 })
 
 //Deletes a user given user id
-app.post('/delete-user', async (req: Request, res: Response) => {
+app.delete('/delete-user', authenticateToken, async (req: Request, res: Response) => {
 
     let uid: string = req.body.uid
     let resObj = await catchError(deleteUser, uid)
@@ -93,7 +93,7 @@ app.post('/delete-user', async (req: Request, res: Response) => {
 })
 
 // Returns all database users
-app.get('/get-all-users', async (req: Request, res: Response) => {
+app.get('/get-all-users', authenticateToken, async (req: Request, res: Response) => {
 
     let users = await getAllUsers()
 
@@ -101,7 +101,7 @@ app.get('/get-all-users', async (req: Request, res: Response) => {
 })
 
 // Deletes all database users
-app.get('/delete-all-users', async (req: Request, res: Response) => {
+app.delete('/delete-all-users', authenticateToken, async (req: Request, res: Response) => {
 
     await deleteAllUsers()
         .catch(e => {console.log(e.message); return res.sendStatus(300);})
@@ -110,14 +110,73 @@ app.get('/delete-all-users', async (req: Request, res: Response) => {
         })
 })
 
-app.get('/get-posts', authenticateToken, async (req: Request, res: Response) => {
+// Creates a post
+app.post('/create-post', authenticateToken, async (req: Request, res: Response) => {
 
-    res.send([
-        {
-            title: "Post1",
-            author: "Kalan"
-        }
-    ])
+    console.log(req.body)
+
+    let body: PostRequestBody = req.body
+    let {title, post, image, authorId} = body
+
+    if (!title || !post || !image || !authorId) return res.status(406).send("insuficient data")
+
+    let params = {title: title, post: post, image: image, authorId: authorId}
+    let resObj = await catchError(createPost, {postParams: params})
+
+    if (resObj.message === undefined) {
+        res.sendStatus(resObj.code)
+    } else {
+        //@ts-ignore
+        res.send(resObj.message, resObj.code)
+    }
+})
+
+//Returns information on a post given id 
+app.post('/get-post', authenticateToken, async (req: Request, res: Response) => {
+
+
+    let id: string = req.body.id
+    let resObj = await catchError(getPost, id)
+
+    
+    if (resObj.message === undefined) {
+        res.sendStatus(resObj.code)
+    } else {
+        //@ts-ignore
+        res.send(resObj.message).status(resObj.code)
+    }
+})
+
+//Deletes a user given user id
+app.delete('/delete-post', authenticateToken, async (req: Request, res: Response) => {
+
+    let id: string = req.body.id
+    let resObj = await catchError(deletePost, id)
+
+    if (resObj.message === undefined) {
+        res.sendStatus(resObj.code)
+    } else {
+        //@ts-ignore
+        res.send(resObj.message, resObj.code)
+    }
+})
+
+// Returns all database posts
+app.get('/get-all-posts', authenticateToken, async (req: Request, res: Response) => {
+
+    let users = await getAllPosts()
+
+    res.send(users)
+})
+
+// Deletes all database users
+app.delete('/delete-all-posts', authenticateToken, async (req: Request, res: Response) => {
+
+    await deleteAllPosts()
+        .catch(e => {console.log(e.message); return res.sendStatus(300);})
+        .then(() => {
+            return res.sendStatus(200)
+        })
 })
 
 app.listen(4000, () => console.log("Server Running"))

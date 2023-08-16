@@ -27,5 +27,4 @@ export const signUpFormOnSubmit = async (params: {email: string, password: strin
 export const logInFormOnSubmit = async (params: {email: string, password: string}) => {
 
     let { accessToken, refreshToken} = await logIn(params)
-
 }

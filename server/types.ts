@@ -37,3 +37,20 @@ export interface LogInReqBody {
     email: string
     password: string
 }
+
+export interface PostRequestBody {
+    title: string
+    post: string
+    image: string
+    authorId: string
+}
+
+export interface PostParams {
+    postParams: {
+        title: string
+        post: string
+        image: string
+        authorId: string
+    }
+}
+

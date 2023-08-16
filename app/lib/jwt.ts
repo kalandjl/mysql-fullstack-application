@@ -81,8 +81,10 @@ export const getNewToken: (refreshToken: string) => Promise<{token: string}> = a
     return { token: token }
 }
 
-export const jwtExpiredVerify = async (refreshToken: string, url: string, headers: {[x: string]: any}, fetchParams: {[x: string]: any}, token: string) => {
+export const jwtExpiredVerify = async (tokens: {token: string, refreshToken: string}, url: string, headers: {[x: string]: any}, fetchParams: {[x: string]: any}) => {
 
+    const { token, refreshToken } = tokens
+    
     let response = await fetch(url, {
         ...fetchParams,
         headers: {
@@ -110,4 +112,16 @@ export const jwtExpiredVerify = async (refreshToken: string, url: string, header
     setJwtToken(newToken)
 
     return response
+}
+
+export const getTokens: () => {token: string, refreshToken: string} = () => {
+
+
+    const token = getJwtToken()
+    const refreshToken = getRefreshToken()
+
+    if (!token) throw new Error("Error occured while getting token")
+    if (!refreshToken) throw new Error("No refresh token valid")
+
+    return ({token: token, refreshToken: refreshToken})
 }

@@ -8,42 +8,43 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(uuid())
-  name          String  @db.VarChar(45)
-  email         String  @unique
-  password      String  @db.VarChar(22)
-  age Int      
-  role Role @default(BASIC)
-  writtenPosts  Post[]  @relation("WrittenPosts")
-  favoritePosts Post[]  @relation("FavoritePosts")
-  userPreference          UserPreference? @relation(fields: [userPreferenceId], references: [id])
-  userPreferenceId        String? @unique
+  id               String          @id @default(uuid())
+  name             String          @db.VarChar(45)
+  email            String          @unique
+  password         String          @db.VarChar(22)
+  age              Int
+  role             Role            @default(BASIC)
+  writtenPosts     Post[]          @relation("WrittenPosts")
+  favoritePosts    Post[]          @relation("FavoritePosts")
+  userPreference   UserPreference? @relation(fields: [userPreferenceId], references: [id])
+  userPreferenceId String?         @unique
 
   @@index([email, name])
 }
 
 model UserPreference {
-  id            String  @id @default(uuid())
-  emailUpdates  Boolean
-  user User?
+  id           String  @id @default(uuid())
+  emailUpdates Boolean
+  user         User?
 }
 
 model Post {
-  id            String   @id @default(uuid())
-  title String
-  averageRating        Float
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  author        User     @relation("WrittenPosts", fields: [authorId], references: [id])
+  id            String     @id @default(uuid())
+  title         String
+  post          String
+  image         String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  author        User       @relation("WrittenPosts", fields: [authorId], references: [id])
   authorId      String
-  favoritedBy   User?     @relation("FavoritePosts", fields: [favoritedById], references: [id])
+  favoritedBy   User?      @relation("FavoritePosts", fields: [favoritedById], references: [id])
   favoritedById String?
-  categories Category[]   
+  categories    Category[]
 }
 
 model Category {
   id    String @id @default(uuid())
-  name String @unique
+  name  String @unique
   posts Post[]
 }
 

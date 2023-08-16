@@ -1,26 +1,28 @@
-import { getJwtToken, getRefreshToken, jwtExpiredVerify } from "./jwt"
+import { getJwtToken, getRefreshToken, getTokens, jwtExpiredVerify } from "./jwt"
 
 export const getPosts = async () => {
 
-
-    const token = getJwtToken()
-
-    if (!token) throw new Error("Error occured while getting token")
-
-    // let response = await fetch(`http://localhost:4000/get-posts`, {
-    //     method: "GET", 
-    //     headers: {
-    //         'Content-type': 'application/json',
-    //         'Authorization': `Bearer ${token}`, 
-    //     }
-    // })
-
-    const refreshToken = getRefreshToken()
-
-    if (!refreshToken) throw new Error("No refresh token valid")
+    const tokens = getTokens()
     
-    let posts = await (await jwtExpiredVerify(refreshToken, 'http://localhost:4000/get-posts', {'Content-type': 'application/json',}, {method: "GET"}, token)).json()
+    let posts = await (await jwtExpiredVerify(tokens, 'http://localhost:4000/get-posts', {'Content-type': 'application/json',}, {method: "GET"})).json()
 
-    console.log(posts)
     return posts
+}
+
+export const getUser = async (uid: string) => {
+
+    const tokens = getTokens()
+    
+    let user = await (await jwtExpiredVerify(tokens, 'http://localhost:4000/get-user', {'Content-type': 'application/json'}, {method: "POST", body: JSON.stringify({"uid": uid})})).json()
+
+    return user
+}
+
+export const getUsers = async () => {
+
+    const tokens = getTokens()
+    
+    let user = await (await jwtExpiredVerify(tokens, 'http://localhost:4000/get-all-users', {'Content-type': 'application/json'}, {method: "GET"})).json()
+
+    return user
 }
